@@ -52,10 +52,6 @@
     var vectorLayer = new ol.layer.Vector({
         source:new ol.source.Vector({
           features: markers,
-            new ol.Feature({
-						geometry: new ol.geom.LineString(lines),
-						name: 'Line',
-					}),
         }),
         style: new ol.style.Style({
           image: new ol.style.Icon({
@@ -68,10 +64,37 @@
       });
       map.addLayer(vectorLayer); 
   }
+
+  function place_line(){
+    var linie2style = [
+				// linestring
+				new ol.style.Style({
+				  stroke: new ol.style.Stroke({
+					color: '#d12710',
+					width: 2
+				  })
+				})
+			  ];
+			  			
+			var linie2 = new ol.layer.Vector({
+					source: new ol.source.Vector({
+					features: [new ol.Feature({
+						geometry: new ol.geom.LineString(lines),
+						name: 'Line',
+					})]
+				})
+			});
+			
+			linie2.setStyle(linie2style);
+			map.addLayer(linie2);
+  }
+
+
     function loadData(){
     var lat,lng;
    
-      db.collection('geotrack5')
+      db.collection('geotrack7')
+          .orderBy('time')
           .get()
           .then(function(querySnapshot) {
                 querySnapshot.forEach(function(doc) {
@@ -83,6 +106,7 @@
 		     lines.push(ol.proj.fromLonLat([lng,lat]));
                   });
                   place_markers();
+                  place_line();
             })
            .catch(function(error) {
                           console.log("Error getting documents: ", error);
@@ -99,3 +123,4 @@
   <div id="map" style="width: 100vw; height: 100vh;"></div>
 </body>
 </html>
+
